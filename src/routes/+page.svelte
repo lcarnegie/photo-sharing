@@ -11,7 +11,7 @@
 
     isCreating = true;
     try {
-      const res = await fetch("/api/events/create", {
+      const res = await fetch("/server/events/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: eventName }),
@@ -39,7 +39,7 @@
       // Clean up input slightly (remove spaces, just in case user pastes weirdly)
       const cleanSlug = joinSlug.trim().toLowerCase().replace(/\s+/g, "-");
 
-      const res = await fetch("/api/events/check", {
+      const res = await fetch("/server/events/check", {
         method: "POST",
         body: JSON.stringify({ slug: cleanSlug }),
       });
@@ -61,9 +61,7 @@
 <main>
   <div class="hero">
     <h1>PicLinks</h1>
-    <p class="subtitle">
-      Share photos instantly. 7 days retention. No Signup.
-    </p>
+    <p class="subtitle">Share photos instantly. 7 days retention. No Signup.</p>
 
     <div class="cards-container">
       <!-- Create Card -->

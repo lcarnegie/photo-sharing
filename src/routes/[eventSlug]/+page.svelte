@@ -93,7 +93,7 @@
       fd.append("uploader", uploaderName);
       fd.append("photo", file);
 
-      const res = await fetch("/api/photos/upload", {
+      const res = await fetch("/server/photos/upload", {
         method: "POST",
         body: fd,
       });
