@@ -13,7 +13,7 @@
   /* Orange-200 */
 
   /* Typography */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: 'Helvetica', 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -37,4 +37,5 @@ a {
 
 button {
   cursor: pointer;
+  color: var(--primary);
 }

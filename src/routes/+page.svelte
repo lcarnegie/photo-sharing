@@ -60,7 +60,7 @@
 
 <main>
   <div class="hero">
-    <h1>PicLinks</h1>
+    <h1>piclinq</h1>
     <p class="subtitle">Share photos instantly. 7 days retention. No Signup.</p>
 
     <div class="cards-container">
@@ -69,12 +69,12 @@
         <h2>New Event</h2>
         <p>Create a temporary space for photos.</p>
         <div class="form-group">
-          <input
-            type="text"
-            placeholder="Event Name (e.g. Jane's Wedding)"
-            bind:value={eventName}
-            on:keydown={(e) => e.key === "Enter" && createEvent()}
-          />
+            <input
+              type="text"
+              placeholder="e.g. Luca's Party"
+              bind:value={eventName}
+              on:keydown={(e) => e.key === "Enter" && createEvent()}
+            />
           <button on:click={createEvent} disabled={isCreating || !eventName}>
             {isCreating ? "Creating..." : "Create"}
           </button>
@@ -90,7 +90,7 @@
         <div class="form-group">
           <input
             type="text"
-            placeholder="Event Code (e.g. orange-party)"
+            placeholder="lucas-party"
             bind:value={joinSlug}
             class:error={!!joinError}
             on:input={() => (joinError = "")}
@@ -206,6 +206,7 @@
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
+    font-style: italic;
     outline: none;
   }
 

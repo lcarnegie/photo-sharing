@@ -22,17 +22,17 @@ export async function POST({ request }) {
     let slug = slugify(name);
     if (!slug) slug = 'event-' + Math.random().toString(36).substring(7);
 
-    // Simple collision resolution (append random)
-    const existing = await getEvent(slug);
-    if (existing) {
-        slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
-    }
-
     try {
+        // Simple collision resolution (append random)
+        const existing = await getEvent(slug);
+        if (existing) {
+            slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+        }
+
         const event = await createEvent(slug, name);
         return json({ slug: event.rowKey, expiresAt: event.expiresAt });
     } catch (e) {
         console.error(e);
-        return json({ message: 'Failed to create event' }, { status: 500 });
+        return json({ message: e.message || 'Failed to create event' }, { status: 500 });
     }
 }

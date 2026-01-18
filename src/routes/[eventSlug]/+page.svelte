@@ -166,9 +166,9 @@
     <section class="panel share-section">
       <h3>Invite Friends</h3>
       <p class="share-desc">Anyone with the link can view and add photos.</p>
-      <div class="copy-row">
-        <input type="text" readonly value={shareUrl} class="share-input" />
-        <button class="copy-btn" on:click={copyLink}>
+      <div class="panel-row">
+        <input type="text" readonly value={shareUrl} class="panel-input" />
+        <button class="panel-btn" on:click={copyLink}>
           {copied ? "Copied!" : "Copy"}
         </button>
       </div>
@@ -176,12 +176,13 @@
 
     <section class="panel upload-section">
       <h3>Add Photos</h3>
-      <div class="upload-controls">
+      <p class="share-desc">Upload photos to share with your friends.</p>
+      <div class="panel-row">
         <input
           type="text"
-          placeholder="Your Name (Required)"
+          placeholder="Your Name"
           bind:value={uploaderName}
-          class="name-input"
+          class="panel-input"
         />
         <div class="file-input-wrapper">
           <input
@@ -191,9 +192,9 @@
             accept="image/*"
             bind:files={uploadFiles}
           />
-          <label for="fileInput" class="file-label">
+          <label for="fileInput" class="panel-btn file-label">
             {#if uploadFiles && uploadFiles.length > 0}
-              {uploadFiles.length} photos selected
+              {uploadFiles.length} selected
             {:else}
               Choose Photos
             {/if}
@@ -327,6 +328,45 @@
   .back-btn {
     text-decoration: none;
     color: var(--primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  /* Shared Panel Styles */
+  .panel-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #f8fafc;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    width: 100%; /* Ensure full width on mobile */
+  }
+  .panel-input:focus {
+    outline: 2px solid var(--primary);
+    border-color: transparent;
+  }
+
+  .panel-btn {
+    padding: 0.75rem 1.2rem;
+    background: #f97316;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--card-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-size: 0.95rem;
+  }
+  .panel-btn:hover {
+    background: #cbd5e1;
   }
 
   .countdown {
@@ -382,25 +422,30 @@
     color: var(--text-main);
   }
 
-  .upload-controls {
+  .panel-row {
     display: flex;
     gap: 0.5rem;
-    flex-wrap: wrap;
     margin-bottom: 0.75rem;
+    height: 48px; /* Enforce explicit height */
   }
 
-  .name-input {
-    flex: 1;
-    min-width: 140px;
-    padding: 0.6rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+  .panel-row .panel-input {
+    height: 100%;
+    box-sizing: border-box; /* Key to matching height */
+    margin: 0;
+  }
+
+  .panel-row .panel-btn {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
   }
 
   .file-input-wrapper {
     position: relative;
     overflow: hidden;
-    display: inline-block;
+    height: 100%; /* Match parent height */
   }
 
   .file-input-wrapper input[type="file"] {
@@ -411,23 +456,22 @@
     width: 100%;
     height: 100%;
     cursor: pointer;
+    z-index: 2; /* Clickable */
   }
 
   .file-label {
-    display: inline-block;
-    padding: 0.6rem 1rem;
-    background: #f1f5f9;
-    color: #334155;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: flex; /* Ensure centering works like other btns */
+    align-items: center;
+    justify-content: center;
   }
 
   .upload-btn {
     width: 100%;
     padding: 0.75rem;
     background: var(--primary);
-    color: white;
+    color: #fff; /* Ensure text is readable on primary color */
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -445,35 +489,7 @@
     margin-bottom: 1rem;
   }
 
-  .copy-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .share-input {
-    flex: 1;
-    padding: 0.6rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: #f8fafc;
-    color: #64748b;
-    font-size: 0.9rem;
-    text-overflow: ellipsis;
-  }
-
-  .copy-btn {
-    padding: 0.6rem 1.2rem;
-    background: #e2e8f0;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    min-width: 80px;
-  }
-  .copy-btn:hover {
-    background: #cbd5e1;
-  }
+  /* Removed copy-row */
 
   /* Filters */
   .filter-section {
