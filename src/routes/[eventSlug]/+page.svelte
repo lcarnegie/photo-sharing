@@ -31,6 +31,27 @@
     selectedPhotoIds = selectedPhotoIds; // trigger update
   }
 
+  async function forceDownload(url, filename) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback
+      window.open(url, "_blank");
+    }
+  }
+
   function downloadSelected() {
     // Loop through selected IDs and trigger download
     // Note: Browsers might block multiple automatic downloads.
@@ -40,12 +61,7 @@
     );
     photosToDownload.forEach((photo, i) => {
       setTimeout(() => {
-        const link = document.createElement("a");
-        link.href = photo.blobUrl;
-        link.download = photo.fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        forceDownload(photo.blobUrl, photo.fileName);
       }, i * 300); // 300ms delay between start to be polite
     });
 
@@ -243,12 +259,8 @@
 
             <button
               class="download-icon"
-              on:click|stopPropagation={() => {
-                const link = document.createElement("a");
-                link.href = photo.blobUrl;
-                link.download = photo.fileName;
-                link.click();
-              }}
+              on:click|stopPropagation={() =>
+                forceDownload(photo.blobUrl, photo.fileName)}
             >
               <svg
                 viewBox="0 0 24 24"
