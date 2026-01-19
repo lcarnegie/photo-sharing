@@ -1,6 +1,6 @@
-# PicLink
+# piqlinq
 
-An anonymous photo-sharing web application. Vibe coded it with Google Antigravity.
+An room-based photo-sharing web application based on SvelteKit and uses MS Azure Blob Storage as the photo storage backend. Vibe coded with Google Antigravity. Might not maintain it long term but if you find it useful I could!
 
 ## Features
 - **Anonymous Uploads**: No login required.
