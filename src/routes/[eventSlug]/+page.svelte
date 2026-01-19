@@ -1,10 +1,14 @@
 <script>
   import { invalidateAll } from "$app/navigation";
   import { onMount, onDestroy } from "svelte";
+  import JSZip from "jszip";
+  import FileSaver from "file-saver";
+  const { saveAs } = FileSaver;
 
   export let data;
 
   let isUploading = false;
+  let isDownloading = false;
   let uploadFiles;
   let uploaderName = "";
 
@@ -76,21 +80,45 @@
     }
   }
 
-  function downloadSelected() {
-    // Loop through selected IDs and trigger download
-    // Note: Browsers might block multiple automatic downloads.
-    // Usually user interaction allows it.
-    const photosToDownload = data.photos.filter((p) =>
-      selectedPhotoIds.has(p.rowKey),
-    );
-    photosToDownload.forEach((photo, i) => {
-      setTimeout(() => {
-        forceDownload(photo.blobUrl, photo.fileName);
-      }, i * 300); // 300ms delay between start to be polite
-    });
+  async function downloadSelected() {
+    if (selectedPhotoIds.size === 0) return;
 
-    selectedPhotoIds = new Set();
-    selectedPhotoIds = selectedPhotoIds;
+    isDownloading = true;
+    try {
+      const photosToDownload = data.photos.filter((p) =>
+        selectedPhotoIds.has(p.rowKey),
+      );
+
+      const zip = new JSZip();
+
+      // Add photos to zip
+      const promises = photosToDownload.map(async (photo) => {
+        try {
+          const response = await fetch(photo.blobUrl);
+          if (!response.ok)
+            throw new Error(`Failed to fetch ${photo.fileName}`);
+          const blob = await response.blob();
+          zip.file(photo.fileName, blob);
+        } catch (err) {
+          console.error(`Error adding ${photo.fileName} to zip:`, err);
+        }
+      });
+
+      await Promise.all(promises);
+
+      // Generate and save zip
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `${data.event.name}-photos.zip`);
+
+      // Clear selection after successful download start
+      selectedPhotoIds = new Set();
+      selectedPhotoIds = selectedPhotoIds;
+    } catch (error) {
+      console.error("Failed to generate zip:", error);
+      alert("Failed to download photos. Please try again.");
+    } finally {
+      isDownloading = false;
+    }
   }
 
   // Countdown
@@ -317,8 +345,14 @@
   {#if selectedPhotoIds.size > 0}
     <div class="sticky-bar">
       <div class="selection-count">{selectedPhotoIds.size} selected</div>
-      <button class="bulk-download-btn" on:click={downloadSelected}>
-        Download All ({selectedPhotoIds.size})
+      <button
+        class="bulk-download-btn"
+        on:click={downloadSelected}
+        disabled={isDownloading}
+      >
+        {isDownloading
+          ? "Zipping..."
+          : `Download All (${selectedPhotoIds.size})`}
       </button>
     </div>
   {/if}
