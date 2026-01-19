@@ -9,15 +9,39 @@
   let uploaderName = "";
 
   // Filtering
-  let filterUploader = "All";
+  let filterUploader = new Set(["All"]);
+
   $: uniqueUploaders = [
     "All",
     ...new Set(data.photos.map((p) => p.uploaderName)),
   ];
-  $: filteredPhotos =
-    filterUploader === "All"
-      ? data.photos
-      : data.photos.filter((p) => p.uploaderName === filterUploader);
+
+  function toggleFilter(name) {
+    if (name === "All") {
+      filterUploader = new Set(["All"]);
+    } else {
+      if (filterUploader.has("All")) {
+        filterUploader.delete("All");
+      }
+
+      if (filterUploader.has(name)) {
+        filterUploader.delete(name);
+      } else {
+        filterUploader.add(name);
+      }
+
+      // If nothing selected, revert to All
+      if (filterUploader.size === 0) {
+        filterUploader.add("All");
+      }
+
+      filterUploader = filterUploader; // Trigger reactivity
+    }
+  }
+
+  $: filteredPhotos = filterUploader.has("All")
+    ? data.photos
+    : data.photos.filter((p) => filterUploader.has(p.uploaderName));
 
   // Selection
   let selectedPhotoIds = new Set();
@@ -218,8 +242,8 @@
     <div class="chips">
       {#each uniqueUploaders as name}
         <button
-          class="chip {filterUploader === name ? 'active' : ''}"
-          on:click={() => (filterUploader = name)}
+          class="chip {filterUploader.has(name) ? 'active' : ''}"
+          on:click={() => toggleFilter(name)}
         >
           {name}
         </button>
