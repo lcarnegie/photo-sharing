@@ -1,4 +1,4 @@
-# piqlinq
+# piclinq
 
 A room-based photo-sharing web application based on SvelteKit and MS Azure Blob Storage as the photo storage backend. Vibe coded with Google Antigravity. Might not maintain it long term but if you find it useful I could!
 
